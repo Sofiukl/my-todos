@@ -1,0 +1,179 @@
+GraphQL is a query language for your APIs. A GraphQL service is created by defining types and fields on types and providing
+functions for each types.
+
+A GraphQL service that will return logged in user name.
+
+
+type User {
+  id: ID,
+  name: String
+}
+type Query {
+  me: User
+}
+
+function queryMe(req) {
+  return req.auth.user;
+}
+
+GraphQL service can receive queries, it validates and executes.
+A typical GraphQL query is 
+{
+  loggedInUser: me {   <- loggedInUser is the alias for our query
+    name  <- we are asking GraphQL to return this fields only in the response
+  }
+}
+
+The output will be like
+{
+  "data" : {
+    "me" : {
+      "name" : "example name"
+    }
+  }
+}
+
+
+FRAGMENTS :
+GraphQL helps us to combine a group of fields and create a reusable unit.
+We can include them in query
+
+
+Example of GraphQL query where we are using fragment
+{
+  userOne : getUser(id: 1) {
+    ...UserResponse
+  }
+  userTwo : getUser(id: 2) {
+    ...UserResponse
+  }
+}
+
+fragment UserResponse {
+  id
+  name
+  friends {
+    name
+  }
+}
+
+Response after executing this query
+{
+  "data" : {
+    "userOne" : {
+      "id" : 1,
+      "name" : "name1",
+      "friends": [
+        "name" : "some name"
+      ]
+    },
+    "userTwo" : {
+      "id" : 1,
+      "name" : "name1",
+      "friends": [
+        "name" : "some name"
+      ]
+    }
+  }
+}
+
+OPERATION NAME
+Up until now, we have been using short hand for query. The full syntax is
+query TwoUsers {
+  userOne : getUser(id: 1) {
+    ...UserResponse
+  }
+  userTwo : getUser(id: 2) {
+    ...UserResponse
+  }
+}
+
+TwoUsers is called query name.
+
+VARIABLES with default values
+
+query TwoUsers($userIdOne: string = 1, $userIdTwo: string = 2) {
+  userOne : getUser(id: $userIdOne) {
+    ...UserResponse
+  }
+  userTwo : getUser(id: $userIdTwo) {
+    ...UserResponse
+  }
+}
+
+Query Parameters
+{
+  "userIdOne": "1",
+  "userIdTwo" : "2"
+}
+
+$userIdOne, $userIdTwo are variable used here.
+
+DIRECTIVES:
+
+Sometimes we need to change the structure of our query response dynamically depending on variable.
+We can use directive feature to achieve this.
+
+@include(if: Boolean) Only include this field in the result if the argument is true.
+@skip(if: Boolean) Skip this field if the argument is true.
+
+query User($withFriends: Boolean! = false) {
+  user : getUser(id: 1) {
+    id
+    name
+    friends @include(if: $withFriends) {
+      name
+    }
+  }
+}
+
+Response
+{
+  "data" : {
+    "user" : {
+      "id" : 1,
+      "name" : "some name"
+    }
+  }
+}
+
+MUTATIONS
+
+Mutation is used to update data in the server, its same like post, patch rest APIs.
+
+mutation UpdateUser {
+  updateUser(id: $userId, updateData: $updateData) {
+    id,
+    name
+  }
+}
+
+query input 
+{
+  "userId" : 1,
+  "updateData" : {
+    "name" : "new name"
+  }
+}
+
+Response
+{
+  "data" : {
+    "id" : 1,
+    "name" : "new name"
+  }
+}
+
+INLINE FRAGMENTS
+
+Sometimes we return different concrete class from server depending on the input.
+In this case we need to use inline fragment for getting concrete class fields in the response.
+
+query User(id; $userId) {
+  user(id: $userId) {
+    name
+    ... on Admin {            <- Inline fragment used here 
+      securityInfo
+    }
+  }
+}

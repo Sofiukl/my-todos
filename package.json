@@ -17,8 +17,14 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
+    "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
+    "express-graphql": "^0.12.0",
+    "fetch": "^1.1.0",
+    "graphql": "^15.3.0",
+    "node-fetch": "^2.6.7",
     "pg": "^8.7.3"
   }
 }
