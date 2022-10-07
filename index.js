@@ -15,12 +15,14 @@ app.post("/save", async (req, res) => {
   const description = req.body.description;
   const assignee = req.body.assignee;
   const priority = req.body.priority;
+  const userId = req.body.userId; //TODO: Fetch from user principal after authentication implementation
 
   const registerTaskResult = await registerTask({
     title,
     description,
     assignee,
     priority,
+    userId,
   });
   const taskId = registerTaskResult.rows[0]["id"];
   console.log("Registered a task with id: " + taskId);
@@ -28,10 +30,17 @@ app.post("/save", async (req, res) => {
   res.json({ task_id: taskId });
 });
 
-app.get("/list", async (req, res) => {
-  const tasksResult = await getTasks();
-  const tasks = tasksResult.rows;
-  console.log(tasks);
+app.get("/list/:id", async (req, res) => {
+  const tasksResult = await getTasks(req.params.id);
+  let tasks = tasksResult.rows;
+  tasks = tasks.map((task) => {
+    const userId = task["user_id"];
+    delete task["user_id"];
+    return {
+      ...task,
+      userId,
+    };
+  });
 
   res.send(tasks);
 });
