@@ -12,7 +12,7 @@ const dbCred = {
   port: 5433,
 };
 
-const pool = Pool({
+const pool = new Pool({
   connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
   ssl: isProduction,
 });
