@@ -27,11 +27,13 @@ SET default_table_access_method = heap;
 -- Name: images; Type: TABLE; Schema: public; Owner: tutorial
 --
 
-CREATE TABLE public.task( task_id serial PRIMARY KEY, title VARCHAR ( 200 ) NOT NULL, description VARCHAR ( 4000 ), assignee VARCHAR ( 100 ), priority VARCHAR ( 50 ), user_id VARCHAR ( 100 ));
+DROP TABLE public.task;
+
+CREATE TABLE public.task( id serial PRIMARY KEY, title VARCHAR ( 200 ) NOT NULL, description VARCHAR ( 4000 ), assignee VARCHAR ( 100 ), priority VARCHAR ( 50 ), user_id VARCHAR ( 100 ));
 
 
 INSERT INTO public.task (title, description, assignee, priority, user_id)
-    VALUES ('sample task created from dataclip', 'no description yet', 'sofikul.mallick', 'high', 'u1');
+    VALUES ('Deployment of all my-todos services', 'Deployment of all my-todos services', 'sofikul.mallick', 'high', '634941c3126761a5b2539b66');
 
 
 -- Completed on 2020-05-26 11:02:33
